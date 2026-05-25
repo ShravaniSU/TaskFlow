@@ -8,6 +8,8 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./
 COPY tsconfig.json ./
 COPY src ./src
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 RUN npm run build
 
 FROM node:20-alpine
