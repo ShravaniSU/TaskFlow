@@ -1,0 +1,6 @@
+aws_region          = "us-east-1"
+project_name        = "taskflow"
+instance_type       = "t3.small"
+ami_id              = "ami-xxxxxxxxxxxxxxxxx"
+ssh_public_key_path = "~/.ssh/taskflow.pub"
+allowed_ssh_cidr    = "YOUR_PUBLIC_IP/32"
