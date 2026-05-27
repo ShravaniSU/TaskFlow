@@ -90,7 +90,7 @@ resource "aws_security_group" "web" {
 }
 
 resource "aws_key_pair" "deploy" {
-  key_name   = "${local.name}-deploy-key"
+  key_name   = "taskflow-deploy-key"
   public_key = file(var.ssh_public_key_path)
 }
 

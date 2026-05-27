@@ -25,33 +25,8 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
 
-  docker:
-    needs: validate
-    runs-on: ubuntu-latest
-    if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/taskflow-backend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/taskflow-backend:${{ github.sha }}
-      - uses: docker/build-push-action@v6
-        with:
-          context: ./frontend
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/taskflow-frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/taskflow-frontend:${{ github.sha }}
-
   deploy:
-    needs: docker
+    needs: validate  # 🚀 Runs immediately after the validation job passes
     runs-on: ubuntu-latest
     if: ${{ secrets.EC2_HOST != '' && secrets.EC2_SSH_KEY != '' && secrets.EC2_USERNAME != '' }}
     steps:
@@ -61,6 +36,11 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /opt/taskflow
-            docker compose pull
-            docker compose up -d
+            # Navigate to your project directory
+            cd ~/TaskFlow
+            
+            # Fetch the fresh code changes from GitHub
+            git pull origin main
+            
+            # Build the containers locally from source and launch them
+            sudo docker compose up --build -d
