@@ -26,9 +26,8 @@ jobs:
           DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
 
   deploy:
-    needs: validate  # 🚀 Runs immediately after the validation job passes
+    needs: validate
     runs-on: ubuntu-latest
-    if: secrets.EC2_HOST != '' && secrets.EC2_SSH_KEY != '' && secrets.EC2_USERNAME != ''
     steps:
       - uses: appleboy/ssh-action@v1.2.0
         with:
@@ -36,11 +35,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Navigate to your project directory
             cd ~/TaskFlow
-            
-            # Fetch the fresh code changes from GitHub
             git pull origin main
-            
-            # Build the containers locally from source and launch them
             sudo docker compose up --build -d
