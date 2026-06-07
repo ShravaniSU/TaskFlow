@@ -30,18 +30,3 @@ TaskFlow is a production-grade, full-stack task management ecosystem built to de
 * **Automated CI/CD Blueprint:** Production pipeline running integration compilation checks prior to rolling container deployments.
 
 ---
-
-## 🗺️ CI/CD GitOps Pipeline Architecture
-
-TaskFlow utilizes an automated **GitOps continuous delivery cycle** powered by GitHub Actions. Every single code adjustment pushed to production is vetted, verified, and shipped without manual interaction.
-
-```mermaid
-graph LR
-    A[Local Code Push] -->|git push origin main| B(GitHub Actions Runner)
-    B --> C{Step 1: Validate Matrix}
-    C -->|Frontend Build Check| D[npm run build]
-    C -->|Backend Engine Check| E[prisma generate && tsc]
-    D & E -->|All Checks Pass| F(Step 2: Deploy Job)
-    F -->|Secure SSH Tunnel| G[AWS EC2 Target Instance]
-    G -->|Fetch Source Delta| H[git pull origin main]
-    H -->|Zero-Downtime Swap| I[sudo docker compose up --build -d]
